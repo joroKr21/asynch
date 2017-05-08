@@ -1,8 +1,6 @@
-package org.purang.net
+package org.purang.net.http
 
-package http
-
-import org.scalatest.{GivenWhenThen, FeatureSpec, Matchers}
+import org.scalatest.{FeatureSpec, GivenWhenThen, Matchers}
 
 /**
  * 
@@ -11,30 +9,31 @@ import org.scalatest.{GivenWhenThen, FeatureSpec, Matchers}
 
 class HeaderSpec extends FeatureSpec with GivenWhenThen with Matchers {
 
+  import implicits._
+
   feature("implicit header conversions") {
 
     scenario("create simple header") {
       Given("the import org.purang.net.http._")
-      import org.purang.net.http._
 
       When("""  "Accept" `:` "application/json"  """)
       val header =  "Accept" `:` "application/json"
 
       Then("header is created")
-      header should be(HeaderImpl("Accept", "application/json"))
+      header should be(HeaderImpl("Accept", Vector("application/json")))
       And("""string representations is "Accept: application/json" """)
       header.toString should be("""Accept: application/json""")
     }
 
     scenario("create a header with mutiple values") {
       Given("the import org.purang.net.http._")
-      import org.purang.net.http._
 
-      When("""  "Accept" `:` "application/json" ++ "text/html" """)
-      val header =  "Accept" `:`  "application/json" ++ "text/html"
+      When(
+        """  "Accept" `:` "application/json" `,` "text/html" """.stripMargin)
+      val header =  "Accept" `:`  "application/json" `,` "text/html"
 
       Then("header is created")
-      header should be(HeaderImpl("Accept", "application/json" ++ "text/html"))
+      header should be(Header("Accept", Vector("application/json", "text/html")))
       And("""string representations is "Accept: application/json, text/html" """)
       header.toString should be("""Accept: application/json, text/html""")
     }
@@ -42,10 +41,9 @@ class HeaderSpec extends FeatureSpec with GivenWhenThen with Matchers {
 
     scenario("create multiple headers") {
       Given("the import org.purang.net.http._")
-      import org.purang.net.http._
 
-      When("""  multiple headers are cocatenated using '++'  """)
-      val headers =   ("Accept" `:` "application/json" ++ "text/html" ++ "text/plain") ++ ("Cache-Control" `:` "no-cache") ++ ("Content-Type" `:` "text/plain")
+      When("""multiple headers are concatenated using ','  """)
+      val headers =   ("Accept" `:` "application/json" `,` "text/html" `,` "text/plain") ++ ("Cache-Control" `:` "no-cache") ++ ("Content-Type" `:` "text/plain")
 
       Then("multiple headers are created")
       headers should be(Vector(HeaderImpl("Accept",Vector("application/json", "text/html", "text/plain")), HeaderImpl("Cache-Control",Vector("no-cache")), HeaderImpl("Content-Type",Vector("text/plain"))))
@@ -53,7 +51,6 @@ class HeaderSpec extends FeatureSpec with GivenWhenThen with Matchers {
 
     scenario("use predefined objects") {
       Given("the import org.purang.net.http._")
-      import org.purang.net.http._
 
       When("""Accept(ApplicationJson) is used""")
       val header = Accept(ApplicationJson)

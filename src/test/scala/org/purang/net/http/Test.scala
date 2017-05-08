@@ -1,13 +1,10 @@
-package org.purang.net
-
-package http
+package org.purang.net.http
 
 import java.util.concurrent.ScheduledExecutorService
 
-import concurrent._
-import concurrent.duration._
-import FiniteDuration._
-import ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent._
+import scala.concurrent.duration._
 
 object Test {
   import ning._

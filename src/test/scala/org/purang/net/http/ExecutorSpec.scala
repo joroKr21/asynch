@@ -1,16 +1,11 @@
-package org.purang.net
+package org.purang.net.http
 
-package http
-
-import org.scalatest._
-import scalaz._, Scalaz._
 import java.util.concurrent.TimeoutException
 
+import org.purang.net.http.implicits._
+import org.scalatest._
+import implicits._
 
-/**
- *
- * @author Piyush Purang
- */
 
 class ExecutorSpec extends FeatureSpec with BeforeAndAfterAll with GivenWhenThen with Matchers {
   val contentType = ContentType(ApplicationJson)
@@ -112,12 +107,13 @@ class ExecutorSpec extends FeatureSpec with BeforeAndAfterAll with GivenWhenThen
              (GET > rheaders.filter(_.name.equals("Location"))(0).value >> headers) ~>
                      { _.fold(t => fail(t._1),  {case (status,_,_,_) => status should be(200)})}
                      //printResponse
-           case y => fail(y)
+           case y => fail(implicits.incompleteResponseToString(y))
          })
       })
     }
 
    scenario("executes a request after modifying it and returns a value") {
+     import RequestModifier._
       Given("a request")
       val url = "http://www.google.com"
 
@@ -127,7 +123,9 @@ class ExecutorSpec extends FeatureSpec with BeforeAndAfterAll with GivenWhenThen
           t => false,
           (status:Status, headers:Headers, body:Body, req:Request) => req.headers.contains(contentType)
         )
-      }, modifier = requestModifier(_ >> contentType))
+      },
+        modifier = requestModifier(_ >> contentType)
+      )
 
       Then("Status is returned")
       headersWereModified should be (true)

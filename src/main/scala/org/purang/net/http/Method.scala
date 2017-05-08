@@ -1,6 +1,4 @@
-package org.purang.net
-
-package http
+package org.purang.net.http
 
 /**
  * The following makes it impossible to define your own HTTP Methods which might be a good thing

@@ -1,11 +1,8 @@
-package org.purang.net
-
-package http
+package org.purang.net.http
 
 import java.util.concurrent.ScheduledExecutorService
 
-import scalaz._
-import Scalaz._
+import scalaz.Scalaz._
 
 sealed trait Request {
   val method: Method
@@ -15,10 +12,10 @@ sealed trait Request {
   def >> (additionalHeaders: Headers): Request
   def >>> (newBody: String) : Request
   //the following blocks     // todo and should be based on the one below
-  def ~>[T](f: ExecutedRequestHandler[T], timeout: Timeout = 2000, modifier : RequestModifier = noop)(implicit executor: NonBlockingExecutor,  schExecutor: ScheduledExecutorService) : T
+  def ~>[T](f: ExecutedRequestHandler[T], timeout: Timeout = 2000, modifier : RequestModifier = implicits.noop)(implicit executor: NonBlockingExecutor,  schExecutor: ScheduledExecutorService) : T
 
   //the following shouldn't block
-  def ~>>(timeout: Timeout = 2000, adapter : RequestModifier = noop)(implicit executor: NonBlockingExecutor) : NonBlockingExecutedRequest
+  def ~>>(timeout: Timeout = 2000, adapter : RequestModifier = implicits.noop)(implicit executor: NonBlockingExecutor) : NonBlockingExecutedRequest
 }
 
 object Request {

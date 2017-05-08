@@ -1,13 +1,12 @@
-package org.purang.net
+package org.purang.net.http
 
-package http
-
-import org.scalatest.{Matchers, GivenWhenThen, FeatureSpec}
-import scalaz._
-import Scalaz._
-import collection.immutable.Vector
 import java.util.concurrent.TimeoutException
 
+import org.scalatest.{FeatureSpec, GivenWhenThen, Matchers}
+
+import scala.collection.immutable.Vector
+import scalaz.Scalaz._
+import scalaz._
 import scalaz.concurrent.Task
 
 class NonBlockingExecutorSpec extends FeatureSpec with GivenWhenThen with Matchers {
@@ -23,7 +22,6 @@ class NonBlockingExecutorSpec extends FeatureSpec with GivenWhenThen with Matche
       Given("a request")
       val url = "http://www.google.com"
       val contentType = ContentType(ApplicationJson)
-      import scalaz.concurrent.Strategy._
 
       When("it is executed with 0 ms timeout")
       val timeout = (HEAD > url).~>>(0)

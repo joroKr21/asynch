@@ -1,12 +1,14 @@
-package org.purang.net
-
-package http
+package org.purang.net.http
 
 import java.util.concurrent.Executors
+
 import org.asynchttpclient._
-import org.scalatest.{FlatSpec, Matchers}
 import org.purang.net.http.ning.{defaultNonBlockingExecutor => _, _}
-import scalaz._, Scalaz._
+import org.scalatest.{FlatSpec, Matchers}
+
+import scalaz.Scalaz._
+import scalaz._
+import implicits._
 
 class CustomNingExecutorSpec extends FlatSpec with Matchers {
 

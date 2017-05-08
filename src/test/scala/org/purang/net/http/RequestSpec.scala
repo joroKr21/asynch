@@ -1,13 +1,7 @@
-package org.purang.net
+package org.purang.net.http
 
-package http
-
-import org.scalatest.{GivenWhenThen, FeatureSpec, Matchers}
-
-/**
- * 
- * @author Piyush Purang
- */
+import org.scalatest.{FeatureSpec, GivenWhenThen, Matchers}
+import implicits._
 
 class RequestSpec extends FeatureSpec with GivenWhenThen with Matchers {
 
@@ -25,12 +19,14 @@ class RequestSpec extends FeatureSpec with GivenWhenThen with Matchers {
     scenario("create a request from a string and add headers and a body to it") {
       Given("a url and some headers")
       val url =  "http://www.google.com"
-      val headers =  ("Accept" `:` "application/json" ++ "text/html" ++ "text/plain") ++ ("Cache-Control" `:` "no-cache") ++ ("Content-Type" `:` "text/plain")
+      val headers =  ("Accept" `:` "application/json" `,` "text/html" `,` "text/plain") ++ ("Cache-Control" `:` "no-cache") ++ ("Content-Type" `:` "text/plain")
 
       When("headers and body are added")
       val req = GET > url >> headers >>> "some text"
 
       Then("it is a valid request")
+      println( req.toString)
+      println("---------------")
       req.toString should be("""|GET http://www.google.com
                                 |Accept: application/json, text/html, text/plain
                                 |Cache-Control: no-cache
@@ -42,7 +38,8 @@ class RequestSpec extends FeatureSpec with GivenWhenThen with Matchers {
     scenario("create a request from a tupple") {
       Given("a tuple of method  url and some headers")
       //the following type hint is needed!
-      val tuple: Tuple3[Method, Url, Headers] = (GET, "http://www.google.com", Accept("application/json" ++ "text/html" ++ "text/plain"))
+      import implicits._
+      val tuple: Tuple3[Method, Url, Headers] = (GET, "http://www.google.com", Accept("application/json" `,` "text/html" `,` "text/plain"))
 
       When("org.purang.net.http.Request._ is imported")
       import org.purang.net.http.Request.apply
